@@ -1,0 +1,96 @@
+<template>
+    <div class="main-canvas">
+
+        <!-- Filter Section -->
+        <div class="slds-grid slds-wrap slds-gutters filter-section slds-p-around_medium slds-box slds-theme_default">
+            <div
+                class="slds-col slds-size_1-of-1 slds-small-size_1-of-2 slds-medium-size_1-of-3 slds-large-size_1-of-6">
+                <lightning-input label="Product Name" type="text" value={filters.productName} data-field="productName"
+                    onchange={handleFilterChange}></lightning-input>
+            </div>
+            <div
+                class="slds-col slds-size_1-of-1 slds-small-size_1-of-2 slds-medium-size_1-of-3 slds-large-size_1-of-6">
+                <lightning-combobox label="Brand" options={brandOptions} data-field="brand"
+                    onchange={handleFilterChange}></lightning-combobox>
+            </div>
+            <div
+                class="slds-col slds-size_1-of-1 slds-small-size_1-of-2 slds-medium-size_1-of-3 slds-large-size_1-of-6">
+                <lightning-input label="Minimum Price" type="number" value={filters.minPrice} data-field="minPrice"
+                    onchange={handleFilterChange}></lightning-input>
+            </div>
+            <div
+                class="slds-col slds-size_1-of-1 slds-small-size_1-of-2 slds-medium-size_1-of-3 slds-large-size_1-of-6">
+                <lightning-input label="Maximum Price" type="number" value={filters.maxPrice} data-field="maxPrice"
+                    onchange={handleFilterChange}></lightning-input>
+            </div>
+            <div
+                class="slds-col slds-size_1-of-1 slds-small-size_1-of-2 slds-medium-size_1-of-3 slds-large-size_1-of-6">
+                <lightning-combobox label="Minimum Rating" options={ratingOptions} data-field="minRating"
+                    onchange={handleFilterChange}></lightning-combobox>
+            </div>
+            <div
+                class="slds-col slds-size_1-of-1 slds-small-size_1-of-2 slds-medium-size_1-of-3 slds-large-size_1-of-6">
+                <lightning-combobox label="Category" options={categoryOptions} data-field="category"
+                    onchange={handleFilterChange}></lightning-combobox>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-m-top_x-large">
+                <lightning-button label="Search" onclick={searchProducts} variant="neutral"
+                    class="slds-float_right slds-button_large"></lightning-button>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="divider"></div>
+
+        <!-- Results Section -->
+        <div class="results-section slds-p-around_medium">
+
+            <!-- Products In Stock -->
+            <div
+                class="slds-grid slds-wrap slds-p-horizontal_medium slds-p-vertical_x-small slds-align_absolute-center">
+                <div class="slds-col slds-size_1-of-1 slds-text-align_right">
+                    <span class="slds-text-body_regular slds-text-color_weak">
+                        {productsInStock} out of {productsInView} products in stock
+                    </span>
+                </div>
+            </div>
+
+            <!-- Spinner -->
+            <template lwc:if={isLoading}>
+                <div class="spinner-container" style="text-align:center;">
+                    <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+                </div>
+            </template>
+            <template lwc:else>
+                <!-- product Results-->
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <template for:each={products} for:item="product" for:index="index">
+                        <div key={product.id}
+                            class="slds-col slds-size_1-of-1 slds-small-size_1-of-2 slds-medium-size_1-of-3 slds-large-size_1-of-5"
+                            style="padding:7px; height: 100%;">
+                            <c-product-tile name={product.Name} brand={product.Brand__c} category={product.Category__c}
+                                price={product.Price__c} rating={product.Rating__c} image={product.Thumbnail__c}>
+                            </c-product-tile></c-product-tile>
+                        </div>
+                    </template>
+                </div>
+                <!-- Pagination Section-->
+                <div
+                    class="slds-p-around_medium slds-align_absolute-center slds-grid slds-wrap slds-grid_vertical-align-center">
+                    <lightning-button label="Previous" onclick={handlePrevious} class="slds-m-right_small"
+                        disabled={isFirstPage}></lightning-button>
+
+                    <div class="slds-m-horizontal_small slds-text-title_bold">
+                        Page {pageNumber} of {totalPages}
+                    </div>
+
+                    <lightning-button label="Next" onclick={handleNext} class="slds-m-left_small"
+                        disabled={isLastPage}></lightning-button>
+                </div>
+            </template>
+
+        </div>
+
+
+    </div>
+</template>
